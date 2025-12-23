@@ -118,7 +118,7 @@ export default function PackagesPage() {
               </div>
 
               {/* Package Content */}
-              <div className="p-6">
+              <div className="p-6 flex justify-between flex-col flex-1">
                 {/* Title & Duration */}
                 <h3 className="mb-2 text-xl font-semibold text-gray-900">{pkg.name}</h3>
                 <div className="mb-3 flex items-center gap-2 text-sm text-gray-600">

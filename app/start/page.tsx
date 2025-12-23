@@ -12,11 +12,11 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 const CITIES = [
-  { name: "Makkah", emoji: "🕋", description: "The holy city of Kaaba", required: false },
-  { name: "Madinah", emoji: "🕌", description: "The city of Prophet Muhammad (PBUH)", required: false },
-  { name: "Jeddah", emoji: "🏖️", description: "Gateway city by the Red Sea", required: false },
-  { name: "Red Sea", emoji: "🌊", description: "Coastal resort destination", required: false },
-  { name: "Riyadh", emoji: "🏙️", description: "Modern capital city", required: false },
+  { name: "Makkah", image: "https://media-distribution.traveazy.com/city/235565/thumbnail.jpg", description: "The holy city of Kaaba", required: false },
+  { name: "Madinah", image: "https://media-distribution.traveazy.com/city/233924/thumbnail.jpg", description: "The city of Prophet Muhammad (PBUH)", required: false },
+  { name: "Jeddah", image: "https://media-distribution.traveazy.com/city/230799/thumbnail.jpg", description: "Gateway city by the Red Sea", required: false },
+  // { name: "Red Sea", image: "/images/red-sea.jpg", description: "Coastal resort destination", required: false },
+  { name: "Riyadh", image: "https://media-distribution.traveazy.com/city/270900/thumbnail.jpg", description: "Modern capital city", required: false },
 ]
 
 const POPULAR_AIRPORTS = [
@@ -216,7 +216,7 @@ export default function StartPage() {
   const sortedCities = [...selectedCities].sort((a, b) => a.order - b.order)
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#DFF6E7] via-white to-[#F0FDF4]">
+    <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6">
@@ -258,7 +258,7 @@ export default function StartPage() {
 
               {/* Selected Cities with Order */}
               {sortedCities.length > 0 && (
-                <div className="mb-6 rounded-xl border-2 border-[#1B8354] bg-[#DFF6E7] p-4">
+                <div className="mb-6 rounded-sm border-2 border-[#1B8354] bg-[#DFF6E7] p-4">
                   <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                     <GripVertical className="h-4 w-4" />
                     Your Journey Sequence
@@ -266,28 +266,7 @@ export default function StartPage() {
                   <div className="space-y-2">
                     {sortedCities.map((city, index) => (
                       <div key={city.name} className="flex items-center gap-3 rounded-lg bg-white p-3">
-                        <div className="flex flex-col gap-1">
-                          <button
-                            onClick={() => moveCityUp(city.name)}
-                            disabled={index === 0}
-                            className={cn(
-                              "h-4 w-6 text-gray-400 hover:text-[#1B8354]",
-                              index === 0 && "cursor-not-allowed opacity-30",
-                            )}
-                          >
-                            ▲
-                          </button>
-                          <button
-                            onClick={() => moveCityDown(city.name)}
-                            disabled={index === sortedCities.length - 1}
-                            className={cn(
-                              "h-4 w-6 text-gray-400 hover:text-[#1B8354]",
-                              index === sortedCities.length - 1 && "cursor-not-allowed opacity-30",
-                            )}
-                          >
-                            ▼
-                          </button>
-                        </div>
+                        
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B8354] text-sm font-bold text-white">
                           {city.order}
                         </div>
@@ -295,9 +274,9 @@ export default function StartPage() {
                         <div className="text-sm text-gray-600">{city.nights}N</div>
                         <button
                           onClick={() => toggleCity(city.name)}
-                          className="text-sm text-red-600 hover:text-red-700"
+                          className="text-sm text-red-600 hover:text-red-700 cursor-pointer font-medium"
                         >
-                          Remove
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                       </div>
                     ))}
@@ -319,13 +298,21 @@ export default function StartPage() {
                     <div
                       key={city.name}
                       className={cn(
-                        "rounded-xl border-2 p-5 transition-all",
+                        "rounded-sm border-2 p-5 transition-all",
                         isSelected ? "border-[#1B8354] bg-[#DFF6E7]/50" : "border-gray-200 bg-white",
                       )}
                     >
                       <div className="mb-4 flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="text-3xl">{city.emoji}</div>
+                          <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-sm">
+                            <Image
+                              src={city.image}
+                              alt={city.name}
+                              fill
+                              className="object-cover"
+                              sizes="48px"
+                            />
+                          </div>
                           <div>
                             <h3 className="text-lg font-bold text-gray-900">{city.name}</h3>
                             <p className="text-xs text-gray-600">{city.description}</p>
@@ -402,7 +389,7 @@ export default function StartPage() {
 
                 {/* Autocomplete Dropdown */}
                 {showAirportSuggestions && departureSearch.length > 0 && Object.keys(airportsByCountry).length > 0 && (
-                  <div className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-xl border-2 border-gray-100 bg-white shadow-2xl">
+                  <div className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-sm border-2 border-gray-100 bg-white shadow-2xl">
                     {Object.entries(airportsByCountry).map(([country, airports]) => (
                       <div key={country}>
                         <div className="sticky top-0 bg-gray-100 px-4 py-2 text-xs font-bold uppercase tracking-wide text-gray-700">
@@ -447,7 +434,7 @@ export default function StartPage() {
                             setDepartureSearch(airport.full)
                           }}
                           className={cn(
-                            "rounded-xl border-2 p-4 text-left transition-all hover:border-[#1B8354] hover:bg-[#DFF6E7]",
+                            "rounded-sm border-2 p-4 text-left transition-all hover:border-[#1B8354] hover:bg-[#DFF6E7]",
                             selectedDeparture === airport.full
                               ? "border-[#1B8354] bg-[#DFF6E7]"
                               : "border-gray-200 bg-white",
@@ -480,7 +467,7 @@ export default function StartPage() {
               <h2 className="mb-2 text-3xl font-bold text-gray-900">Departure Date</h2>
               <p className="mb-6 text-lg text-gray-600">When would you like to begin your journey?</p>
 
-              <div className="rounded-xl border-2 border-gray-100 bg-white p-6 shadow-sm">
+              <div className="rounded-sm border-2 border-gray-100 bg-white p-6 shadow-sm">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -503,7 +490,7 @@ export default function StartPage() {
                 </Popover>
 
                 {departureDate && (
-                  <div className="animate-in fade-in-0 slide-in-from-top-2 mt-6 rounded-xl bg-[#DFF6E7] p-4">
+                  <div className="animate-in fade-in-0 slide-in-from-top-2 mt-6 rounded-sm bg-[#DFF6E7] p-4">
                     <div className="flex items-start gap-3">
                       <CalendarIcon className="mt-0.5 h-5 w-5 text-[#1B8354]" />
                       <div>
@@ -535,7 +522,7 @@ export default function StartPage() {
                     key={category.id}
                     onClick={() => setSelectedHotelCategory(category.id)}
                     className={cn(
-                      "rounded-xl border-2 p-6 text-center transition-all hover:border-[#1B8354] hover:shadow-lg",
+                      "rounded-sm border-2 p-6 text-center transition-all hover:border-[#1B8354] hover:shadow-lg",
                       selectedHotelCategory === category.id
                         ? "border-[#1B8354] bg-[#DFF6E7] shadow-lg"
                         : "border-gray-200 bg-white",
@@ -549,7 +536,7 @@ export default function StartPage() {
               </div>
 
               {selectedHotelCategory && (
-                <div className="mt-6 rounded-xl border-2 border-[#1B8354]/20 bg-[#DFF6E7] p-4 text-center">
+                <div className="mt-6 rounded-sm border-2 border-[#1B8354]/20 bg-[#DFF6E7] p-4 text-center">
                   <Star className="mx-auto mb-2 h-6 w-6 text-[#1B8354]" />
                   <div className="font-semibold text-gray-900">
                     {HOTEL_CATEGORIES.find((c) => c.id === selectedHotelCategory)?.name} hotels selected
@@ -573,7 +560,7 @@ export default function StartPage() {
 
               <div className="space-y-4">
                 {rooms.map((room, index) => (
-                  <div key={index} className="rounded-xl border-2 border-gray-200 bg-white p-6 shadow-sm">
+                  <div key={index} className="rounded-sm border-2 border-gray-200 bg-white p-6 shadow-sm">
                     <div className="mb-4 flex items-center justify-between">
                       <h3 className="text-lg font-bold text-gray-900">Room {index + 1}</h3>
                       {rooms.length > 1 && (
@@ -638,13 +625,13 @@ export default function StartPage() {
 
                 <button
                   onClick={addRoom}
-                  className="w-full rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 py-4 text-sm font-semibold text-gray-700 transition-all hover:border-[#1B8354] hover:bg-[#DFF6E7] hover:text-[#1B8354]"
+                  className="w-full rounded-sm border-2 border-dashed border-gray-300 bg-gray-50 py-4 text-sm font-semibold text-gray-700 transition-all hover:border-[#1B8354] hover:bg-[#DFF6E7] hover:text-[#1B8354]"
                 >
                   + Add another room
                 </button>
               </div>
 
-              <div className="mt-6 rounded-xl border-2 border-[#1B8354]/20 bg-[#DFF6E7] p-4">
+              <div className="mt-6 rounded-sm border-2 border-[#1B8354]/20 bg-[#DFF6E7] p-4">
                 <div className="text-center font-semibold text-gray-900">
                   Total: {totalTravelers} Traveler{totalTravelers !== 1 ? "s" : ""} • {rooms.length} Room
                   {rooms.length !== 1 ? "s" : ""}
