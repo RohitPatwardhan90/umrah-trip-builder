@@ -1,15 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
+import { createPortal } from "react-dom"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon, Plane, ArrowRight, ArrowLeft, Minus, Plus, GripVertical, Star } from "lucide-react"
-import { format, addDays } from "date-fns"
+import { CalendarIcon, Plane, ArrowRight, ArrowLeft, Minus, Plus, GripVertical, Star, X } from "lucide-react"
+import { format, addDays, addMonths, subMonths } from "date-fns"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { CurrencySymbol } from "@/components/currency-symbol"
+import { DayButton, getDefaultClassNames } from "react-day-picker"
 
 const CITIES = [
   { name: "Makkah", image: "https://media-distribution.traveazy.com/city/235565/thumbnail.jpg", description: "The holy city of Kaaba", required: false },
@@ -60,6 +63,23 @@ const HOTEL_CATEGORIES = [
   { id: "5-star", name: "5 Star", description: "Luxury experience", icon: "⭐⭐⭐⭐⭐" },
 ]
 
+// Generate sample price data for dates (replace with actual API data)
+const generateDatePrices = (startDate: Date, monthsAhead: number = 6) => {
+  const prices: Record<string, number> = {}
+  const today = new Date()
+  const endDate = new Date(today)
+  endDate.setMonth(today.getMonth() + monthsAhead)
+  
+  let currentDate = new Date(today)
+  while (currentDate <= endDate) {
+    const dateKey = format(currentDate, 'yyyy-MM-dd')
+    // Generate random prices between 800-1400 (replace with real API data)
+    prices[dateKey] = Math.floor(Math.random() * 600) + 800
+    currentDate = addDays(currentDate, 1)
+  }
+  return prices
+}
+
 export default function StartPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
@@ -75,6 +95,27 @@ export default function StartPage() {
   const [departureDate, setDepartureDate] = useState<Date>(addDays(new Date(), 7))
   const [rooms, setRooms] = useState([{ adults: 1, children: 0 }])
   const [selectedHotelCategory, setSelectedHotelCategory] = useState<string>("") // Added hotel category state
+  
+  const inputRef = useRef<HTMLDivElement>(null)
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; width: number } | null>(null)
+  
+  // Date prices state
+  const [datePrices] = useState<Record<string, number>>(() => generateDatePrices(new Date(), 6))
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
+  
+  // Calculate cheapest dates (bottom 20% of prices)
+  const getCheapestDates = (prices: Record<string, number>) => {
+    const sortedPrices = Object.entries(prices).sort(([, a], [, b]) => a - b)
+    const cheapestCount = Math.max(1, Math.floor(sortedPrices.length * 0.2))
+    const cheapestThreshold = sortedPrices[cheapestCount - 1]?.[1] || 0
+    return new Set(
+      Object.entries(prices)
+        .filter(([, price]) => price <= cheapestThreshold)
+        .map(([date]) => date)
+    )
+  }
+  
+  const cheapestDates = getCheapestDates(datePrices)
 
   const filteredAirports = POPULAR_AIRPORTS.filter(
     (airport) =>
@@ -95,14 +136,30 @@ export default function StartPage() {
   const totalNights = selectedCities.reduce((sum, city) => sum + city.nights, 0)
   const totalTravelers = rooms.reduce((sum, room) => sum + room.adults + room.children, 0)
 
+  // Update dropdown position when it should be shown
   useEffect(() => {
-    if (currentStep === 2 && selectedDeparture.length > 0) {
-      const timer = setTimeout(() => {
-        setCurrentStep(3)
-      }, 600)
-      return () => clearTimeout(timer)
+    if (showAirportSuggestions && departureSearch.length > 0 && Object.keys(airportsByCountry).length > 0) {
+      const updatePosition = () => {
+        if (inputRef.current) {
+          const rect = inputRef.current.getBoundingClientRect()
+          setDropdownPosition({
+            top: rect.bottom + window.scrollY + 8,
+            left: rect.left + window.scrollX,
+            width: rect.width,
+          })
+        }
+      }
+      updatePosition()
+      window.addEventListener('scroll', updatePosition, true)
+      window.addEventListener('resize', updatePosition)
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true)
+        window.removeEventListener('resize', updatePosition)
+      }
+    } else {
+      setDropdownPosition(null)
     }
-  }, [selectedDeparture, currentStep])
+  }, [showAirportSuggestions, departureSearch, airportsByCountry])
 
   const isStepValid = () => {
     switch (currentStep) {
@@ -215,17 +272,82 @@ export default function StartPage() {
 
   const sortedCities = [...selectedCities].sort((a, b) => a.order - b.order)
 
+  // Custom Day Button Component with Price
+  function CalendarDayWithPrice({
+    day,
+    modifiers,
+    ...props
+  }: React.ComponentProps<typeof DayButton>) {
+    const defaultClassNames = getDefaultClassNames()
+    const ref = useRef<HTMLButtonElement>(null)
+    
+    useEffect(() => {
+      if (modifiers.focused) ref.current?.focus()
+    }, [modifiers.focused])
+
+    const dateKey = format(day.date, 'yyyy-MM-dd')
+    const dayPrice = datePrices[dateKey]
+    const isCheap = cheapestDates.has(dateKey)
+    const isSelected = modifiers.selected && !modifiers.range_start && !modifiers.range_end && !modifiers.range_middle
+    const isDisabled = modifiers.disabled || modifiers.outside
+
+    return (
+      <Button
+        ref={ref}
+        variant="ghost"
+        size="icon"
+        data-day={day.date.toLocaleDateString()}
+        data-selected-single={isSelected}
+        data-cheapest={isCheap && !isSelected}
+        data-disabled={isDisabled}
+        className={cn(
+          // Base layout: centered date
+          'flex aspect-square w-full min-w-0 flex-col justify-center items-center',
+          'rounded-md h-full text-center',
+          'transition-all duration-150',
+          // Default state: white background
+          'bg-white hover:bg-gray-50',
+          // Selected state: bg #1B8354, text #FFFFFF, shadow (overrides all)
+          'data-[selected-single=true]:!bg-[#1B8354] data-[selected-single=true]:!text-white',
+          'data-[selected-single=true]:shadow-md data-[selected-single=true]:shadow-[#1B8354]/20',
+          'data-[selected-single=true]:hover:!bg-[#1B8354] data-[selected-single=true]:hover:!text-white',
+          // Cheapest state: light green background, subtle border (only if not selected)
+          'data-[cheapest=true]:bg-[#DFF6E7] data-[cheapest=true]:border data-[cheapest=true]:border-[#1B8354]/20',
+          'data-[cheapest=true]:hover:bg-[#DFF6E7]/90',
+          // Disabled state: reduced opacity, no interaction
+          'data-[disabled=true]:opacity-40 data-[disabled=true]:cursor-not-allowed',
+          'data-[disabled=true]:hover:bg-white',
+          // Focus state
+          'group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10',
+          'group-data-[focused=true]/day:ring-2 group-data-[focused=true]/day:ring-[#1B8354]/50',
+          defaultClassNames.day,
+          props.className,
+        )}
+        disabled={isDisabled}
+        {...props}
+      >
+        {/* Date number */}
+        <span className={cn(
+          "text-sm font-semibold leading-none",
+          isSelected ? "!text-white" : "text-gray-900"
+        )}>
+          {day.date.getDate()}
+        </span>
+      </Button>
+    )
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
+      {/* Header - z-index: 30 */}
+      <header className="sticky top-0 z-30 border-b bg-white/80 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6">
           <Image src="/images/nusuk-umrah-logo.png" alt="Nusuk Logo" width={120} height={40} className="h-10 w-auto" />
         </div>
       </header>
 
-      {/* Progress Bar */}
-      <div className="sticky top-0 z-10 border-b bg-white/90 backdrop-blur-sm">
+      {/* Progress Bar - z-index: 20 */}
+      <div className="sticky top-[73px] z-20 border-b bg-white/90 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6">
           <div className="flex items-center gap-2">
             {Array.from({ length: totalSteps }, (_, i) => (
@@ -248,7 +370,8 @@ export default function StartPage() {
         </div>
       </div>
 
-      <main className="mx-auto flex flex-1 w-full max-w-5xl flex-col px-4 py-8 sm:px-6">
+      {/* Main Content Area with bottom padding for footer */}
+      <main className="mx-auto flex flex-1 w-full max-w-5xl flex-col px-4 py-8 pb-32 sm:px-6">
         <div className="flex flex-1 flex-col justify-center">
           {/* Step 1: Select Cities & Nights - Now with sequence/order */}
           {currentStep === 1 && (
@@ -371,9 +494,9 @@ export default function StartPage() {
                 </button>
               </div>
 
-              <div className="relative">
+              <div className="relative" ref={inputRef}>
                 <div className="relative">
-                  <Plane className="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-400" />
+                  <Plane className="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-400 z-10" />
                   <Input
                     placeholder="Search for your departure airport..."
                     value={departureSearch}
@@ -382,44 +505,33 @@ export default function StartPage() {
                       setShowAirportSuggestions(true)
                     }}
                     onFocus={() => setShowAirportSuggestions(true)}
-                    className="h-16 bg-white pl-14 pr-4 text-lg focus-visible:ring-2 focus-visible:ring-[#1B8354]"
+                    onBlur={() => {
+                      // Delay to allow click events on dropdown
+                      setTimeout(() => setShowAirportSuggestions(false), 200)
+                    }}
+                    className={cn(
+                      "h-16 bg-white pl-14 text-lg focus-visible:ring-2 focus-visible:ring-[#1B8354]",
+                      selectedDeparture ? "pr-12" : "pr-4"
+                    )}
                     autoFocus
                   />
+                  {selectedDeparture && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSelectedDeparture("")
+                        setDepartureSearch("")
+                        setShowAirportSuggestions(false)
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+                      aria-label="Clear selected airport"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
-
-                {/* Autocomplete Dropdown */}
-                {showAirportSuggestions && departureSearch.length > 0 && Object.keys(airportsByCountry).length > 0 && (
-                  <div className="absolute z-50 mt-2 max-h-96 w-full overflow-auto rounded-sm border-2 border-gray-100 bg-white shadow-2xl">
-                    {Object.entries(airportsByCountry).map(([country, airports]) => (
-                      <div key={country}>
-                        <div className="sticky top-0 bg-gray-100 px-4 py-2 text-xs font-bold uppercase tracking-wide text-gray-700">
-                          {country}
-                        </div>
-                        {airports.map((airport) => (
-                          <button
-                            key={airport.code}
-                            onClick={() => {
-                              setSelectedDeparture(airport.full)
-                              setDepartureSearch(airport.full)
-                              setShowAirportSuggestions(false)
-                            }}
-                            className="w-full border-b border-gray-100 px-6 py-3 text-left transition-colors last:border-b-0 hover:bg-[#DFF6E7]"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="font-semibold text-gray-900">{airport.city}</div>
-                                <div className="text-sm text-gray-600">{airport.full}</div>
-                              </div>
-                              <div className="rounded-lg bg-[#1B8354] px-3 py-1 text-sm font-bold text-white">
-                                {airport.code}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 {/* Popular UAE Airports Only */}
                 {(!departureSearch || !showAirportSuggestions) && (
@@ -458,6 +570,54 @@ export default function StartPage() {
                   </div>
                 )}
               </div>
+
+              {/* Autocomplete Dropdown - Rendered via Portal */}
+              {showAirportSuggestions && 
+               departureSearch.length > 0 && 
+               Object.keys(airportsByCountry).length > 0 && 
+               dropdownPosition &&
+               typeof window !== 'undefined' &&
+               createPortal(
+                <div
+                  className="fixed z-[100] max-h-96 overflow-auto rounded-sm border-2 border-gray-100 bg-white shadow-2xl"
+                  style={{
+                    top: `${dropdownPosition.top}px`,
+                    left: `${dropdownPosition.left}px`,
+                    width: `${dropdownPosition.width}px`,
+                  }}
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  {Object.entries(airportsByCountry).map(([country, airports]) => (
+                    <div key={country}>
+                      <div className="sticky top-0 z-10 bg-gray-100 px-4 py-2 text-xs font-bold uppercase tracking-wide text-gray-700">
+                        {country}
+                      </div>
+                      {airports.map((airport) => (
+                        <button
+                          key={airport.code}
+                          onClick={() => {
+                            setSelectedDeparture(airport.full)
+                            setDepartureSearch(airport.full)
+                            setShowAirportSuggestions(false)
+                          }}
+                          className="w-full border-b border-gray-100 px-6 py-3 text-left transition-colors last:border-b-0 hover:bg-[#DFF6E7]"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-semibold text-gray-900">{airport.city}</div>
+                              <div className="text-sm text-gray-600">{airport.full}</div>
+                            </div>
+                            <div className="rounded-lg bg-[#1B8354] px-3 py-1 text-sm font-bold text-white">
+                              {airport.code}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>,
+                document.body
+              )}
             </div>
           )}
 
@@ -467,46 +627,51 @@ export default function StartPage() {
               <h2 className="mb-2 text-3xl font-bold text-gray-900">Departure Date</h2>
               <p className="mb-6 text-lg text-gray-600">When would you like to begin your journey?</p>
 
-              <div className="rounded-sm border-2 border-gray-100 bg-white p-6 shadow-sm">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-16 w-full justify-start border-2 bg-white text-left text-lg font-normal hover:bg-gray-50"
-                    >
-                      <CalendarIcon className="mr-3 h-6 w-6 text-[#1B8354]" />
-                      {departureDate ? format(departureDate, "PPP") : "Select your departure date"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="center">
-                    <Calendar
-                      mode="single"
-                      selected={departureDate}
-                      onSelect={handleDateSelect}
-                      initialFocus
-                      disabled={(date) => date < new Date()}
-                    />
-                  </PopoverContent>
-                </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !departureDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {departureDate ? format(departureDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={departureDate}
+                    onSelect={handleDateSelect}
+                    initialFocus
+                    disabled={(date) => date < new Date()}
+                    components={{
+                      DayButton: CalendarDayWithPrice,
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
 
-                {departureDate && (
-                  <div className="animate-in fade-in-0 slide-in-from-top-2 mt-6 rounded-sm bg-[#DFF6E7] p-4">
-                    <div className="flex items-start gap-3">
-                      <CalendarIcon className="mt-0.5 h-5 w-5 text-[#1B8354]" />
-                      <div>
-                        <div className="font-semibold text-gray-900">Your Umrah Journey</div>
-                        <div className="mt-1 text-sm text-gray-700">
-                          Departure: {format(departureDate, "PPP")}
-                          <br />
-                          Duration: {totalNights} nights
-                          <br />
-                          Estimated Return: {format(addDays(departureDate, totalNights), "PPP")}
-                        </div>
+              {/* Journey Summary - Updates automatically when date is selected */}
+              {departureDate && (
+                <div className="animate-in fade-in-0 slide-in-from-top-2 mt-6 rounded-sm bg-[#DFF6E7] p-4">
+                  <div className="flex items-start gap-3">
+                    <CalendarIcon className="mt-0.5 h-5 w-5 text-[#1B8354]" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Your Umrah Journey</div>
+                      <div className="mt-1 text-sm text-gray-700">
+                        Departure: {format(departureDate, "PPP")}
+                        <br />
+                        Duration: {totalNights} nights
+                        <br />
+                        Estimated Return: {format(addDays(departureDate, totalNights), "PPP")}
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -640,9 +805,11 @@ export default function StartPage() {
             </div>
           )}
         </div>
+      </main>
 
-        {/* Sticky Footer with Navigation */}
-        <div className="sticky bottom-0 mt-8 border-t bg-white/90 backdrop-blur-sm py-4">
+      {/* Sticky Footer with Navigation - z-index: 40, outside scrollable area */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-white/90 backdrop-blur-sm shadow-lg">
+        <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1 text-sm text-gray-600">
               {sortedCities.length > 0 && (
@@ -684,7 +851,7 @@ export default function StartPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

@@ -19,6 +19,7 @@ import {
   Filter,
 } from "lucide-react"
 import Image from "next/image"
+import { CurrencySymbol } from "@/components/currency-symbol"
 import { useState } from "react"
 
 export default function PlanningChoicePage() {
@@ -320,8 +321,9 @@ export default function PlanningChoicePage() {
                   <div className="mb-4 flex items-baseline gap-2">
                     <span className="text-sm text-gray-600">From</span>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold text-gray-900">
-                        SAR {pkg.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="text-2xl font-bold text-gray-900 inline-flex items-baseline gap-1">
+                        <CurrencySymbol />
+                        <span>{pkg.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       </span>
                     </div>
                   </div>

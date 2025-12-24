@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Train, Smartphone, Shield, User, Plus, ShoppingCart } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import { CurrencySymbol } from "@/components/currency-symbol"
 
 export function CrossSellAddons() {
   const addons = [
@@ -78,7 +79,10 @@ export function CrossSellAddons() {
 
                 <div className="mb-4 flex items-baseline justify-between border-t border-border pt-4">
                   <div>
-                    <div className="text-2xl font-bold text-foreground">SAR {addon.price}</div>
+                    <div className="text-2xl font-bold text-foreground inline-flex items-baseline gap-1">
+                      <CurrencySymbol />
+                      <span>{addon.price}</span>
+                    </div>
                     <div className="text-xs text-muted-foreground">{addon.duration}</div>
                   </div>
                 </div>

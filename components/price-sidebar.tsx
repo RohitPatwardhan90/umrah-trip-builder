@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Plane, Building2, Car, Info, AlertCircle, Bookmark, Download, Share2 } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CurrencySymbol } from "@/components/currency-symbol"
 
 export function PriceSidebar() {
   const hasRequiredItems = true // Set to false to show missing items warning
@@ -10,7 +11,10 @@ export function PriceSidebar() {
       {/* Price Section with Breakdown */}
       <div className="border-b border-border bg-primary/5 p-6">
         <div className="mb-1 flex items-center gap-2">
-          <div className="text-4xl font-bold text-foreground">SAR 10,997.59</div>
+          <div className="text-4xl font-bold text-foreground inline-flex items-baseline gap-1">
+            <CurrencySymbol />
+            <span>10,997.59</span>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -31,11 +35,17 @@ export function PriceSidebar() {
         <div className="space-y-2 border-t border-border/50 pt-4">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Base Price</span>
-            <span className="font-medium">SAR 9,767.46</span>
+            <span className="font-medium inline-flex items-baseline gap-1">
+              <CurrencySymbol />
+              <span>9,767.46</span>
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Taxes</span>
-            <span className="font-medium">SAR 1,230.13</span>
+            <span className="font-medium inline-flex items-baseline gap-1">
+              <CurrencySymbol />
+              <span>1,230.13</span>
+            </span>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Plane, Building2, Check, MapPin, Calendar, Users, Hotel } from "lucide-react"
 import Image from "next/image"
+import { CurrencySymbol } from "@/components/currency-symbol"
 
 export default function BuildStepByStepPage() {
   const router = useRouter()
@@ -253,8 +254,9 @@ export default function BuildStepByStepPage() {
                         <div className="flex items-center gap-4">
                           {flight.badge && <Badge className="bg-[#1B8354] text-white">{flight.badge}</Badge>}
                           <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900">
-                              SAR {flight.price.toLocaleString()}
+                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                              <CurrencySymbol />
+                              <span>{flight.price.toLocaleString()}</span>
                             </div>
                           </div>
                         </div>
@@ -329,8 +331,9 @@ export default function BuildStepByStepPage() {
                         <div className="flex items-center gap-4">
                           {hotel.badge && <Badge className="bg-[#1B8354] text-white">{hotel.badge}</Badge>}
                           <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900">
-                              SAR {hotel.price.toLocaleString()}
+                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                              <CurrencySymbol />
+                              <span>{hotel.price.toLocaleString()}</span>
                             </div>
                             <div className="text-xs text-gray-500">2 nights</div>
                           </div>
@@ -381,8 +384,9 @@ export default function BuildStepByStepPage() {
                         <div className="flex items-center gap-4">
                           {hotel.badge && <Badge className="bg-[#1B8354] text-white">{hotel.badge}</Badge>}
                           <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900">
-                              SAR {hotel.price.toLocaleString()}
+                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                              <CurrencySymbol />
+                              <span>{hotel.price.toLocaleString()}</span>
                             </div>
                             <div className="text-xs text-gray-500">1 night</div>
                           </div>
@@ -474,8 +478,9 @@ export default function BuildStepByStepPage() {
                         <span className="text-sm font-medium text-gray-700">Flight</span>
                       </div>
                       {selectedFlightDetails ? (
-                        <span className="text-sm font-semibold text-gray-900">
-                          SAR {selectedFlightDetails.price.toLocaleString()}
+                        <span className="text-sm font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                          <CurrencySymbol />
+                          <span>{selectedFlightDetails.price.toLocaleString()}</span>
                         </span>
                       ) : flightSkipped ? (
                         <Badge variant="outline" className="text-xs">
@@ -501,8 +506,9 @@ export default function BuildStepByStepPage() {
                         <span className="text-sm font-medium text-gray-700">Makkah Hotel</span>
                       </div>
                       {selectedMakkahHotelDetails ? (
-                        <span className="text-sm font-semibold text-gray-900">
-                          SAR {selectedMakkahHotelDetails.price.toLocaleString()}
+                        <span className="text-sm font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                          <CurrencySymbol />
+                          <span>{selectedMakkahHotelDetails.price.toLocaleString()}</span>
                         </span>
                       ) : (
                         <span className="text-xs text-gray-500">Not selected</span>
@@ -523,8 +529,9 @@ export default function BuildStepByStepPage() {
                         <span className="text-sm font-medium text-gray-700">Madinah Hotel</span>
                       </div>
                       {selectedMadinahHotelDetails ? (
-                        <span className="text-sm font-semibold text-gray-900">
-                          SAR {selectedMadinahHotelDetails.price.toLocaleString()}
+                        <span className="text-sm font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                          <CurrencySymbol />
+                          <span>{selectedMadinahHotelDetails.price.toLocaleString()}</span>
                         </span>
                       ) : (
                         <span className="text-xs text-gray-500">Not selected</span>
@@ -542,7 +549,10 @@ export default function BuildStepByStepPage() {
                 <div className="mt-6 pt-6 border-t">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Estimated Total</span>
-                    <span className="text-2xl font-semibold text-gray-900">SAR {estimatedTotal.toLocaleString()}</span>
+                    <span className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                      <CurrencySymbol />
+                      <span>{estimatedTotal.toLocaleString()}</span>
+                    </span>
                   </div>
                   <p className="mt-1 text-xs text-gray-500">All prices inclusive</p>
                 </div>

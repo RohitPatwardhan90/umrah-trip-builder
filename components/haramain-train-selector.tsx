@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Train, Clock, Check, X } from "lucide-react"
+import { CurrencySymbol } from "@/components/currency-symbol"
 
 interface TrainOption {
   id: string
@@ -150,7 +151,10 @@ export function HaramainTrainSelector({ onTrainAdded, selectedTrainId }: Haramai
 
               <div className="mt-3 flex items-center justify-between border-t border-[#1B8354]/20 pt-3">
                 <span className="text-sm text-muted-foreground">Price per traveler</span>
-                <span className="text-lg font-semibold text-foreground">SAR {selectedTrain.price}</span>
+                <span className="text-lg font-semibold text-foreground inline-flex items-baseline gap-1">
+                  <CurrencySymbol />
+                  <span>{selectedTrain.price}</span>
+                </span>
               </div>
             </div>
 
@@ -198,7 +202,10 @@ export function HaramainTrainSelector({ onTrainAdded, selectedTrainId }: Haramai
 
                       <div className="flex items-center justify-between border-t border-border pt-3">
                         <span className="text-sm text-muted-foreground">Price per traveler</span>
-                        <span className="text-lg font-semibold text-foreground">SAR {train.price}</span>
+                        <span className="text-lg font-semibold text-foreground inline-flex items-baseline gap-1">
+                          <CurrencySymbol />
+                          <span>{train.price}</span>
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -252,7 +259,10 @@ export function HaramainTrainSelector({ onTrainAdded, selectedTrainId }: Haramai
 
                     <div className="flex items-center justify-between border-t border-border pt-3">
                       <span className="text-sm text-muted-foreground">Price per traveler</span>
-                      <span className="text-lg font-semibold text-foreground">SAR {train.price}</span>
+                      <span className="text-lg font-semibold text-foreground inline-flex items-baseline gap-1">
+                        <CurrencySymbol />
+                        <span>{train.price}</span>
+                      </span>
                     </div>
                   </div>
                 ))}

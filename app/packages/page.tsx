@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Plane, Building2, Car, Star, MapPin } from "lucide-react"
 import Image from "next/image"
+import { CurrencySymbol } from "@/components/currency-symbol"
 
 export default function PackagesPage() {
   const router = useRouter()
@@ -166,7 +167,10 @@ export default function PackagesPage() {
                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                   <div>
                     <div className="text-sm text-gray-600">Starting from</div>
-                    <div className="text-2xl font-bold text-gray-900">SAR {pkg.price.toLocaleString()}</div>
+                    <div className="text-2xl font-bold text-gray-900 inline-flex items-baseline gap-1">
+                      <CurrencySymbol />
+                      <span>{pkg.price.toLocaleString()}</span>
+                    </div>
                   </div>
                   <Button onClick={() => handlePackageClick(pkg.id)} className="bg-[#1B8354] hover:bg-[#166A45]">
                     Book now
