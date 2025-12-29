@@ -54,9 +54,7 @@ export function FlightDetails() {
         {/* Outbound Flight */}
         <div className="flex flex-col gap-4 rounded-lg border border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex size-12 items-center justify-center rounded-lg bg-muted">
-              <Image src="/saudia-airlines-logo.jpg" alt="Saudia" width={32} height={32} className="size-8" />
-            </div>
+          <Image src="/saudia-airlines-logo.png" alt="Saudia" width={32} height={32} className="size-8" />
             <div>
               <div className="text-sm font-medium text-muted-foreground">Saudia</div>
             </div>
@@ -96,9 +94,7 @@ export function FlightDetails() {
         {/* Return Flight */}
         <div className="flex flex-col gap-4 rounded-lg border border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex size-12 items-center justify-center rounded-lg bg-muted">
-              <Image src="/saudia-airlines-logo.jpg" alt="Saudia" width={32} height={32} className="size-8" />
-            </div>
+          <Image src="/saudia-airlines-logo.png" alt="Saudia" width={32} height={32} className="size-8" />
             <div>
               <div className="text-sm font-medium text-muted-foreground">Saudia</div>
             </div>

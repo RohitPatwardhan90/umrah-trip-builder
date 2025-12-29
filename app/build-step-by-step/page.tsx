@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Plane, Building2, Check, MapPin, Calendar, Users, Hotel } from "lucide-react"
+import { ArrowLeft, Plane, Building2, Check, MapPin, Calendar, Users, Hotel, Star, Landmark } from "lucide-react"
 import Image from "next/image"
 import { CurrencySymbol } from "@/components/currency-symbol"
+import { Separator } from "@/components/ui/separator"
 
 export default function BuildStepByStepPage() {
   const router = useRouter()
@@ -31,26 +32,38 @@ export default function BuildStepByStepPage() {
     {
       id: "flight-1",
       airline: "Saudia",
-      departureTime: "02:30",
-      arrivalTime: "05:20",
-      duration: "5h 20m",
-      price: 2856,
+      flightNumber: "SV 4015",
+      departureTime: "07:40",
+      departureCity: "Riyadh",
+      arrivalTime: "09:15",
+      arrivalCity: "Madinah",
+      duration: "01 h 35 m",
+      flightType: "Non stop",
+      price: 2945.03,
       badge: "Recommended",
     },
     {
       id: "flight-2",
       airline: "Flynas",
+      flightNumber: "XY 1234",
       departureTime: "08:15",
+      departureCity: "Riyadh",
       arrivalTime: "11:30",
-      duration: "5h 15m",
+      arrivalCity: "Madinah",
+      duration: "03 h 15 m",
+      flightType: "Non stop",
       price: 2456,
     },
     {
       id: "flight-3",
       airline: "Saudia",
+      flightNumber: "SV 4016",
       departureTime: "14:45",
+      departureCity: "Riyadh",
       arrivalTime: "18:00",
-      duration: "5h 15m",
+      arrivalCity: "Madinah",
+      duration: "03 h 15 m",
+      flightType: "Non stop",
       price: 2756,
     },
   ]
@@ -60,26 +73,58 @@ export default function BuildStepByStepPage() {
       id: "hotel-makkah-1",
       name: "Al Shohada Hotel",
       rating: 5,
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
       distance: "0.88 km from Kaaba",
+      location: "King Abdul Aziz Endowment",
       roomType: "TRIPLE STANDARD",
       price: 3200,
       badge: "Recommended",
+      image: "/al-shohada-hotel-makkah.jpg",
+      rooms: 2,
+      nights: 2,
+      adults: 4,
     },
     {
       id: "hotel-makkah-2",
       name: "Makkah Clock Royal Tower",
       rating: 5,
-      distance: "0.1 km from Kaaba",
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
+      distance: "Steps from Holy Kaaba",
+      location: "King Abdul Aziz Endowment",
       roomType: "DELUXE TWIN",
       price: 5800,
+      badge: "Great Value",
+      image: "/al-shohada-hotel-makkah.jpg",
+      rooms: 2,
+      nights: 1,
+      adults: 4,
     },
     {
       id: "hotel-makkah-3",
       name: "Dar Al Tawhid InterContinental",
       rating: 5,
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
       distance: "0.45 km from Kaaba",
+      location: "King Abdul Aziz Endowment",
       roomType: "STANDARD TWIN",
       price: 4200,
+      badge: "Great Value",
+      image: "/al-shohada-hotel-makkah.jpg",
+      rooms: 2,
+      nights: 1,
+      adults: 4,
     },
   ]
 
@@ -88,26 +133,58 @@ export default function BuildStepByStepPage() {
       id: "hotel-madinah-1",
       name: "Al Rawda Royal Inn",
       rating: 5,
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
       distance: "0.43 km from Al-Masjid an-Nabawi",
+      location: "King Abdul Aziz Endowment",
       roomType: "Executive Suite Haram View",
       price: 2800,
       badge: "Recommended",
+      image: "/al-rawda-royal-inn-madinah.jpg",
+      rooms: 2,
+      nights: 1,
+      adults: 4,
     },
     {
       id: "hotel-madinah-2",
       name: "Hilton Madinah",
       rating: 5,
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
       distance: "0.35 km from Al-Masjid an-Nabawi",
+      location: "King Abdul Aziz Endowment",
       roomType: "DELUXE ROOM",
       price: 3400,
+      badge: "Great Value",
+      image: "/al-rawda-royal-inn-madinah.jpg",
+      rooms: 2,
+      nights: 1,
+      adults: 4,
     },
     {
       id: "hotel-madinah-3",
       name: "Dar Al Eiman Royal",
       rating: 4,
+      overallRating: 9.5,
+      ratingLabel: "Excellent",
+      staffRating: 8.5,
+      facilitiesRating: 9.5,
+      cleanlinessRating: 4.5,
       distance: "0.75 km from Al-Masjid an-Nabawi",
+      location: "King Abdul Aziz Endowment",
       roomType: "STANDARD TWIN",
       price: 2200,
+      badge: "Great Value",
+      image: "/al-rawda-royal-inn-madinah.jpg",
+      rooms: 2,
+      nights: 1,
+      adults: 4,
     },
   ]
 
@@ -226,38 +303,64 @@ export default function BuildStepByStepPage() {
                     <Card
                       key={flight.id}
                       onClick={() => handleFlightSelect(flight.id, flight.price)}
-                      className={`cursor-pointer p-6 transition-all ${
+                      className={`cursor-pointer p-4 rounded-sm transition-all ${
                         selectedFlight === flight.id
-                          ? "border-2 border-[#1B8354] bg-[#DFF6E7]"
-                          : "border-2 border-gray-200 hover:border-gray-300"
+                          ? "border-2 border-[#1B8354] bg-[#F3FCF6]"
+                          : "border border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-6">
+                      <div className="flex items-center justify-between gap-6">
+                        {/* Airline Section */}
+                        <div className="flex items-center gap-4">
                           <Image
-                            src="/saudia-airlines-logo.jpg"
+                            src="/saudia-airlines-logo.png"
                             alt={flight.airline}
-                            width={60}
-                            height={60}
-                            className="h-12 w-12 rounded object-cover"
+                            width={40}
+                            height={40}
+                            className="rounded object-cover"
                           />
                           <div>
                             <div className="font-semibold text-gray-900">{flight.airline}</div>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <span>{flight.departureTime}</span>
-                              <span>→</span>
-                              <span>{flight.arrivalTime}</span>
-                              <span className="text-gray-500">({flight.duration})</span>
-                            </div>
+                            <div className="text-sm text-gray-500">{flight.flightNumber}</div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          {flight.badge && <Badge className="bg-[#1B8354] text-white">{flight.badge}</Badge>}
-                          <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
-                              <CurrencySymbol />
-                              <span>{flight.price.toLocaleString()}</span>
+
+                        {/* Flight Route Section */}
+                        <div className="flex flex-1 items-center gap-4">
+                          {/* Departure */}
+                          <div className="text-center">
+                            <div className="text-xl font-bold text-gray-900">{flight.departureTime}</div>
+                            <div className="text-sm text-gray-900">{flight.departureCity}</div>
+                          </div>
+
+                          {/* Flight Path with Duration */}
+                          <div className="flex flex-1 flex-col items-center gap-2">
+                            <div className="text-sm text-gray-500">{flight.duration}</div>
+                            <div className="flex w-full items-center">
+                              <Separator className="flex-1" />
+                              <div className="mx-2 flex items-center justify-center">
+                                <Plane className="h-4 w-4 text-gray-400" />
+                              </div>
+                              <Separator className="flex-1" />
                             </div>
+                            <div className="text-sm text-gray-500">{flight.flightType}</div>
+                          </div>
+
+                          {/* Arrival */}
+                          <div className="text-center">
+                            <div className="text-xl font-bold text-gray-900">{flight.arrivalTime}</div>
+                            <div className="text-sm text-gray-900">{flight.arrivalCity}</div>
+                          </div>
+                        </div>
+
+                        {/* Price Section */}
+                        <div className="flex flex-col items-end gap-2">
+                          {flight.badge && (
+                            <Badge className="bg-[#1B8354] text-white">{flight.badge}</Badge>
+                          )}
+                          <div className="text-xl font-semibold text-[#1B8354] inline-flex items-baseline gap-1">
+                            <CurrencySymbol />
+                            <span>{flight.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                           </div>
                         </div>
                       </div>
@@ -265,7 +368,7 @@ export default function BuildStepByStepPage() {
                   ))}
                   <Card
                     onClick={handleSkipFlights}
-                    className={`cursor-pointer p-6 transition-all ${
+                    className={`cursor-pointer p-6 rounded-sm transition-all ${
                       flightSkipped
                         ? "border-2 border-[#1B8354] bg-[#DFF6E7]"
                         : "border-2 border-dashed border-gray-300 hover:border-gray-400"
@@ -300,42 +403,80 @@ export default function BuildStepByStepPage() {
                     <Card
                       key={hotel.id}
                       onClick={() => handleMakkahHotelSelect(hotel.id, hotel.price)}
-                      className={`cursor-pointer p-6 transition-all ${
+                      className={`cursor-pointer overflow-hidden transition-all ${
                         selectedMakkahHotel === hotel.id
-                          ? "border-2 border-[#1B8354] bg-[#DFF6E7]"
-                          : "border-2 border-gray-200 hover:border-gray-300"
+                          ? "border-2 border-[#1B8354] bg-[#F3FCF6]"
+                          : "border border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex gap-6">
+                      <div className="flex gap-0">
+                        {/* Left Side - Image */}
+                        <div className="relative w-64 flex-shrink-0">
                           <Image
-                            src="/al-shohada-hotel-makkah.jpg"
+                            src={hotel.image}
                             alt={hotel.name}
-                            width={120}
-                            height={90}
-                            className="h-24 w-32 rounded-lg object-cover"
+                            fill
+                            className="object-cover"
                           />
-                          <div>
-                            <div className="mb-1 font-semibold text-gray-900">{hotel.name}</div>
-                            <div className="mb-2 flex items-center gap-1">
+                          {hotel.badge && (
+                            <Badge className="absolute left-3 top-3 bg-[#1B8354] text-white rounded-full px-3 py-1">
+                              {hotel.badge}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Middle Section - Hotel Info */}
+                        <div className="flex-1 p-6">
+                          <div className="mb-3">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+                            <div className="flex items-center gap-1 mb-3">
                               {Array.from({ length: hotel.rating }).map((_, i) => (
-                                <span key={i} className="text-amber-500">
-                                  ★
-                                </span>
+                                <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                               ))}
                             </div>
-                            <div className="text-sm text-gray-600">{hotel.distance}</div>
-                            <div className="text-sm text-gray-600">{hotel.roomType}</div>
+                            <div className="space-y-1.5 text-sm text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <Landmark className="h-4 w-4 text-gray-500" />
+                                <span>{hotel.distance}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-gray-500" />
+                                <span>{hotel.location}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Rating Badges */}
+                          <div className="flex items-center gap-3 mt-4">
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Staff</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.staffRating}</div>
+                            </div>
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Facilities</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.facilitiesRating}</div>
+                            </div>
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Cleanliness</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.cleanlinessRating}</div>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          {hotel.badge && <Badge className="bg-[#1B8354] text-white">{hotel.badge}</Badge>}
+
+                        {/* Right Side - Rating & Price */}
+                        <div className="flex flex-col items-end justify-between p-6 min-w-[200px]">
+                          <Badge className="bg-[#1B8354] text-white mb-4 rounded px-3 py-1">
+                            {hotel.ratingLabel} {hotel.overallRating}
+                          </Badge>
                           <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                            <div className="text-2xl font-bold text-gray-900 inline-flex items-baseline gap-1 mb-1">
                               <CurrencySymbol />
-                              <span>{hotel.price.toLocaleString()}</span>
+                              <span>{hotel.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
-                            <div className="text-xs text-gray-500">2 nights</div>
+                            <div className="text-xs text-gray-500 mb-2">Including taxes and fees</div>
+                            <div className="text-xs text-gray-600">
+                              For {hotel.rooms} {hotel.rooms === 1 ? 'Room' : 'Rooms'} | {hotel.nights} {hotel.nights === 1 ? 'Night' : 'Nights'} | {hotel.adults} {hotel.adults === 1 ? 'Adult' : 'Adults'}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -353,42 +494,80 @@ export default function BuildStepByStepPage() {
                     <Card
                       key={hotel.id}
                       onClick={() => handleMadinahHotelSelect(hotel.id, hotel.price)}
-                      className={`cursor-pointer p-6 transition-all ${
+                      className={`cursor-pointer overflow-hidden transition-all ${
                         selectedMadinahHotel === hotel.id
-                          ? "border-2 border-[#1B8354] bg-[#DFF6E7]"
-                          : "border-2 border-gray-200 hover:border-gray-300"
+                          ? "border-2 border-[#1B8354] bg-[#F3FCF6]"
+                          : "border border-gray-200 hover:border-gray-300"
                       }`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex gap-6">
+                      <div className="flex gap-0">
+                        {/* Left Side - Image */}
+                        <div className="relative w-64 flex-shrink-0">
                           <Image
-                            src="/al-rawda-royal-inn-madinah.jpg"
+                            src={hotel.image}
                             alt={hotel.name}
-                            width={120}
-                            height={90}
-                            className="h-24 w-32 rounded-lg object-cover"
+                            fill
+                            className="object-cover"
                           />
-                          <div>
-                            <div className="mb-1 font-semibold text-gray-900">{hotel.name}</div>
-                            <div className="mb-2 flex items-center gap-1">
+                          {hotel.badge && (
+                            <Badge className="absolute left-3 top-3 bg-[#1B8354] text-white rounded-full px-3 py-1">
+                              {hotel.badge}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Middle Section - Hotel Info */}
+                        <div className="flex-1 p-6">
+                          <div className="mb-3">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+                            <div className="flex items-center gap-1 mb-3">
                               {Array.from({ length: hotel.rating }).map((_, i) => (
-                                <span key={i} className="text-amber-500">
-                                  ★
-                                </span>
+                                <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                               ))}
                             </div>
-                            <div className="text-sm text-gray-600">{hotel.distance}</div>
-                            <div className="text-sm text-gray-600">{hotel.roomType}</div>
+                            <div className="space-y-1.5 text-sm text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <Landmark className="h-4 w-4 text-gray-500" />
+                                <span>{hotel.distance}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-gray-500" />
+                                <span>{hotel.location}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Rating Badges */}
+                          <div className="flex items-center gap-3 mt-4">
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Staff</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.staffRating}</div>
+                            </div>
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Facilities</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.facilitiesRating}</div>
+                            </div>
+                            <div className="flex flex-col items-center justify-center px-3 py-2 min-w-[60px]">
+                              <div className="text-xs text-gray-600 mb-0.5">Cleanliness</div>
+                              <div className="text-sm font-semibold text-[#1B8354]">{hotel.cleanlinessRating}</div>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          {hotel.badge && <Badge className="bg-[#1B8354] text-white">{hotel.badge}</Badge>}
+
+                        {/* Right Side - Rating & Price */}
+                        <div className="flex flex-col items-end justify-between p-6 min-w-[200px]">
+                          <Badge className="bg-[#1B8354] text-white mb-4 rounded px-3 py-1">
+                            {hotel.ratingLabel} {hotel.overallRating}
+                          </Badge>
                           <div className="text-right">
-                            <div className="text-2xl font-semibold text-gray-900 inline-flex items-baseline gap-1">
+                            <div className="text-2xl font-bold text-gray-900 inline-flex items-baseline gap-1 mb-1">
                               <CurrencySymbol />
-                              <span>{hotel.price.toLocaleString()}</span>
+                              <span>{hotel.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
-                            <div className="text-xs text-gray-500">1 night</div>
+                            <div className="text-xs text-gray-500 mb-2">Including taxes and fees</div>
+                            <div className="text-xs text-gray-600">
+                              For {hotel.rooms} {hotel.rooms === 1 ? 'Room' : 'Rooms'} | {hotel.nights} {hotel.nights === 1 ? 'Night' : 'Nights'} | {hotel.adults} {hotel.adults === 1 ? 'Adult' : 'Adults'}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -492,7 +671,7 @@ export default function BuildStepByStepPage() {
                     </div>
                     {selectedFlightDetails && (
                       <div className="mt-1 text-xs text-gray-600">
-                        {selectedFlightDetails.airline} • {selectedFlightDetails.departureTime} -{" "}
+                        {selectedFlightDetails.airline} {selectedFlightDetails.flightNumber} • {selectedFlightDetails.departureTime} -{" "}
                         {selectedFlightDetails.arrivalTime}
                       </div>
                     )}
